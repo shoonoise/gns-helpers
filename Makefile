@@ -6,3 +6,7 @@ pylint:
 		base \
 		--output-format=colorized 2>&1 | less -SR
 
+clean:
+	find . -type f -name '*.pyc' -delete
+	find . -type d -name __pycache__ -delete
+
