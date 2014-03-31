@@ -10,9 +10,9 @@ import ulib.validators.common # pylint: disable=W0611
 import ulib.validators.network
 
 from raava import worker
+from gns import env
 
 from . import common
-from ... import env
 
 
 ##### Public constants #####
@@ -121,14 +121,8 @@ def _send_event(task, to, event, subject = DEFAULT_SUBJECT_TEMPLATE, body = DEFA
     return _send_raw(task, to, env.format_event(subject, event), env.format_event(body, event), cc)
 
 
-##### Private classes #####
-class _Email:
-    send_raw = worker.make_task_builtin(_send_raw)
-    send_event = worker.make_task_builtin(_send_event)
-
-
-##### Public constants #####
-BUILTINS_MAP = {
-    "email": _Email,
-}
+##### Public classes #####
+class Email:
+    send_raw = worker.make_task_method(_send_raw)
+    send_event = worker.make_task_method(_send_event)
 

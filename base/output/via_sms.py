@@ -8,9 +8,9 @@ from ulib import validators
 import ulib.validators.common # pylint: disable=W0611
 
 from raava import worker
+from gns import env
 
 from . import common
-from ... import env
 
 
 ##### Public constants #####
@@ -49,7 +49,7 @@ _logger = logging.getLogger(__name__)
 
 ##### Private methods #####
 def _send_raw(task, to, body):
-    to = validators.common.validStringList(to)
+    to = validators.common.valid_string_list(to)
 
     request = urllib.request.Request(
         env.get_config(common.S_OUTPUT, S_SMS, O_SEND_URL),
@@ -82,14 +82,8 @@ def _send_event(task, to, event, body = DEFAULT_BODY_TEMPLATE):
     return _send_raw(task, to, env.format_event(body, event))
 
 
-##### Private classes #####
-class _Sms:
-    send_raw = worker.make_task_builtin(_send_raw)
-    send_event = worker.make_task_builtin(_send_event)
-
-
-##### Public constants #####
-BUILTINS_MAP = {
-    "sms": _Sms,
-}
+##### Public classes #####
+class Sms:
+    send_raw = worker.make_task_method(_send_raw)
+    send_event = worker.make_task_method(_send_event)
 

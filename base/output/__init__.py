@@ -1,12 +1,13 @@
 import functools
 
 from ulib import typetools
-
 from ulib import validators
 import ulib.validators.common # pylint: disable=W0611
 
-from . import email
-from . import ya_sms
+from gns import env
+
+from . import via_email
+from . import via_ya_sms
 
 
 ##### Public constants #####
@@ -21,13 +22,21 @@ CONFIG_MAP = functools.reduce(typetools.merge_dicts, (
                 O_NOOP: (False, validators.common.valid_bool),
             }
         },
-        email.CONFIG_MAP,
-        ya_sms.CONFIG_MAP,
+        via_email.CONFIG_MAP,
+        via_ya_sms.CONFIG_MAP,
     ))
 
-BUILTINS_MAP = functools.reduce(typetools.merge_dicts, (
-        {},
-        email.BUILTINS_MAP,
-        ya_sms.BUILTINS_MAP,
-    ))
+
+##### On import #####
+env.patch_config(CONFIG_MAP)
+
+
+##### Provides #####
+email = via_email.Email # pylint: disable=C0103
+sms = via_ya_sms.Sms # pylint: disable=C0103
+
+__all__ = (
+    "email",
+    "sms",
+)
 
