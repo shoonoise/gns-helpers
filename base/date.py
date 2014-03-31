@@ -3,7 +3,7 @@ import dateutil.parser
 
 
 ##### Private classes #####
-class _Date:
+class date:
     workdays = tuple(range(0, 5))
     offdays = tuple(range(5, 7))
 
@@ -33,8 +33,8 @@ for (name, value) in zip(
     setattr(_Date, name, value)
 
 
-##### Public constants #####
-BUILTINS_MAP = {
-    "date": _Date,
-}
+##### Provides #####
+__all__ = (
+    "date",
+)
 
