@@ -2,8 +2,8 @@ import logging
 
 from raava import zoo
 
-from .. import zclient
-from .. import env
+from gns import zclient
+from gns import env
 
 
 ##### Private constants #####
@@ -71,8 +71,8 @@ def _get_value(path, default=_NoValue):
     return _replace_value(path, _NoValue, default)[:2]
 
 
-##### Private classes #####
-class _Storage:
+##### Public classes #####
+class storage:
     replace = _replace_value
     set = _set_value
     get = _get_value
@@ -80,8 +80,8 @@ class _Storage:
     VersionError = VersionError
 
 
-##### Public constants #####
-BUILTINS_MAP = {
-    "storage": _Storage,
-}
+##### Provides #####
+__all__ = (
+    "storage",
+)
 
