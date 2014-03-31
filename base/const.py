@@ -1,5 +1,5 @@
-##### _Private constants #####
-class _EVENT:
+##### Public constants #####
+class EVENT:
     HOST    = "host"
     SERVICE = "service"
     STATUS  = "status"
@@ -7,15 +7,16 @@ class _EVENT:
 
 
 ###
-class _STATUS:
+class STATUS:
     OK   = "OK" # pylint: disable=C0103
     INFO = "INFO"
     WARN = "WARN"
     CRIT = "CRIT"
 
-###
-BUILTINS_MAP = {
-    "EVENT":   _EVENT,
-    "STATUS":  _STATUS,
-}
+
+##### Provides #####
+__all__ = (
+    "EVENT",
+    "STATUS",
+)
 
