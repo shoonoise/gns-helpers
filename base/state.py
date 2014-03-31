@@ -24,7 +24,7 @@ def _add_previous(*fields):
             check_id = typetools.object_hash([ event_root.get(field) for field in fields ])
             check_path = zoo.join("_state", check_id)
             version = event_root.get_extra()[rules.EXTRA.COUNTER]
-            (kwargs["previous"], old_version, write_ok) = storage.replace(
+            (kwargs["previous"], old_version, write_ok) = storage.storage.replace(
                 path=check_path,
                 value=event_root,
                 default=None,
@@ -42,7 +42,7 @@ def _is_changed(previous, current, from_, to, field=None):
     if previous is None:
         return True
     if field is None:
-        field = EVENT.STATUS
+        field = const.EVENT.STATUS
     is_changed = (
         (from_ is None or from_ == previous.get(field)) and
         (to is None or to == current.get(field)) and
@@ -52,7 +52,7 @@ def _is_changed(previous, current, from_, to, field=None):
 
 
 ##### Private classes #####
-class state:
+class state: # pylint: disable=C0103
     add_previous = _add_previous
     is_changed = _is_changed
 

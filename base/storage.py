@@ -72,7 +72,7 @@ def _get_value(path, default=_NoValue):
 
 
 ##### Public classes #####
-class storage:
+class storage: # pylint: disable=C0103
     replace = _replace_value
     set = _set_value
     get = _get_value

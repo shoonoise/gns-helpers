@@ -5,10 +5,10 @@ from raava.rules import disable_handler
 
 
 ##### Private classes #####
-class cmp:
+class cmp: # pylint: disable=C0103
     pass
 for (name, comparator) in comparators.COMPARATORS_MAP.items():
-    setattr(_Cmp, name, comparator)
+    setattr(cmp, name, comparator)
 
 
 ##### Provides #####

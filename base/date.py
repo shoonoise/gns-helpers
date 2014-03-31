@@ -3,7 +3,7 @@ import dateutil.parser
 
 
 ##### Private classes #####
-class date:
+class date: # pylint: disable=C0103
     workdays = tuple(range(0, 5))
     offdays = tuple(range(5, 7))
 
@@ -15,7 +15,7 @@ class date:
 
     @staticmethod
     def now():
-        return _Date(None)
+        return date(None)
 
     @property
     def weekday(self):
@@ -30,7 +30,7 @@ for (name, value) in zip(
         ("mon", "tue", "wed", "thu", "fri", "sat", "sun"),
         tuple(range(1, 13)) + tuple(range(7)),
     ):
-    setattr(_Date, name, value)
+    setattr(date, name, value)
 
 
 ##### Provides #####
