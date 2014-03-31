@@ -1,19 +1,21 @@
-from raava import rules
 from raava import comparators
+from raava.rules import match_event
+from raava.rules import match_extra
+from raava.rules import disable_handler
 
 
 ##### Private classes #####
-class _Cmp:
+class cmp:
     pass
 for (name, comparator) in comparators.COMPARATORS_MAP.items():
     setattr(_Cmp, name, comparator)
 
 
-##### Public constants #####
-BUILTINS_MAP = {
-    "cmp":             _Cmp,
-    "match_event":     rules.match_event,
-    "match_extra":     rules.match_extra,
-    "disable_handler": rules.disable_handler,
-}
+##### Provides #####
+__all__ = (
+    "cmp",
+    "match_event",
+    "match_extra",
+    "disable_handler",
+)
 
