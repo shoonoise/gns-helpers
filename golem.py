@@ -51,7 +51,7 @@ def _is_responsible(host, user):
 ###
 def _golem_call(handle, attrs=None, data=None, ro=True):
     golem_url = env.get_config(S_GOLEM, ( O_URL_RO if ro else O_URL_RW ))
-    golem_url += handle
+    golem_url += "/" + handle
     if attrs:
         golem_url += "?" + urllib.parse.urlencode(attrs)
     request = urllib.request.Request(golem_url, data=data)
