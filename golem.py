@@ -8,7 +8,6 @@ import time
 from ulib import validators
 import ulib.validators.common # pylint: disable=W0611
 
-from raava import worker
 from gns import env
 
 
@@ -89,8 +88,8 @@ env.patch_config(CONFIG_MAP)
 
 ##### Provides #####
 class golem: # pylint: disable=C0103
-    get_responsibles = worker.make_task_method(_get_responsibles)
-    is_responsible = worker.make_task_method(_is_responsible)
+    get_responsibles = _get_responsibles
+    is_responsible = _is_responsible
 
 __all__ = (
     "golem",
