@@ -1,6 +1,5 @@
 import urllib.request
 import urllib.parse
-import urllib.error
 import contextlib
 import functools
 import time
@@ -32,24 +31,6 @@ CONFIG_MAP = {
 env.patch_config(CONFIG_MAP)
 
 
-##### Exceptions #####
-class GolemApiError(Exception):
-    def __init__(self, body, err):
-        super(GolemApiError, self).__init__()
-        self._body = body
-        self._err = err
-
-    def __str__(self):
-        msg = []
-        try:
-            msg.append(self._err.geturl())
-        except Exception as err:
-            msg.append(str(err))
-        msg.append(str(self._err))
-        msg.append(repr(self._body))
-        return " ".join(msg)
-
-
 ##### Private methods #####
 def _inner_get_responsibles(host):
     result = _golem_call("api/get_host_resp.sbml", { "host": host }).decode()
@@ -75,11 +56,8 @@ def _golem_call(handle, attrs=None, data=None, ro=True):
         golem_url += "?" + urllib.parse.urlencode(attrs)
     request = urllib.request.Request(golem_url, data=data)
     opener = urllib.request.build_opener()
-    try:
-        with contextlib.closing(opener.open(request)) as web_file:
-            return web_file.read()
-    except urllib.error.HTTPError as err:
-        raise GolemApiError(err.read(), err)
+    with contextlib.closing(opener.open(request)) as web_file:
+        return web_file.read()
 
 
 ##### Provides #####
