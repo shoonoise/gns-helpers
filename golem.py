@@ -16,7 +16,8 @@ S_GOLEM = "golem"
 
 O_URL_RO        = "url-ro"
 O_URL_RW        = "url-rw"
-O_RECACHE_RESPS = "recache-resps"
+O_CACHE_SIZE    = "cache-size"
+O_RECACHE_EVERY = "recache-every"
 
 
 ###
@@ -24,9 +25,11 @@ CONFIG_MAP = {
     S_GOLEM: {
         O_URL_RO:        ("http://example.com", str),
         O_URL_RW:        ("http://example.com", str),
-        O_RECACHE_RESPS: (60, lambda arg: validators.common.valid_number(arg, 0)),
+        O_CACHE_SIZE:    (10000, lambda arg: validators.common.valid_number(arg, 0)),
+        O_RECACHE_EVERY: (60, lambda arg: validators.common.valid_number(arg, 1)),
     },
 }
+env.patch_config(CONFIG_MAP)
 
 
 ##### Exceptions #####
@@ -52,16 +55,13 @@ def _inner_get_responsibles(host):
     result = _golem_call("api/get_host_resp.sbml", { "host": host }).decode()
     return list(filter(None, result.strip().split(",")))
 
-@functools.lru_cache(1)
+@functools.lru_cache(env.get_config(S_GOLEM, O_CACHE_SIZE))
 def _cached_get_responsibles(host, every):
     return _inner_get_responsibles(host)
 
 def _get_responsibles(host):
-    every = env.get_config(S_GOLEM, O_RECACHE_RESPS)
-    if every == 0: # No cache
-        return _inner_get_responsibles(host)
-    else:
-        return _cached_get_responsibles(host, time.time() // every)
+    every = env.get_config(S_GOLEM, O_RECACHE_EVERY)
+    return _cached_get_responsibles(host, time.time() // every)
 
 def _is_responsible(host, user):
     return ( user in _get_responsibles(host) )
@@ -80,10 +80,6 @@ def _golem_call(handle, attrs=None, data=None, ro=True):
             return web_file.read()
     except urllib.error.HTTPError as err:
         raise GolemApiError(err.read(), err)
-
-
-##### On import #####
-env.patch_config(CONFIG_MAP)
 
 
 ##### Provides #####
