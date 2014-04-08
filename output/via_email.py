@@ -3,6 +3,7 @@ import email.mime.multipart
 import email.mime.text
 import email.utils
 
+import contextlib
 import logging
 
 from ulib import validators
@@ -99,21 +100,14 @@ def _send_raw(task, to, subject, body, cc = ()):
     if not env.get_config(common.S_OUTPUT, common.O_NOOP):
         smtp_class = ( smtplib.SMTP_SSL if env.get_config(common.S_OUTPUT, S_EMAIL, O_SSL) else smtplib.SMTP )
         try:
-            server = smtp_class(server_host)
-            if user is not None:
-                server.login(user, env.get_config(common.S_OUTPUT, S_EMAIL, O_PASSWD))
-            server.sendmail(send_from, to + cc, message.as_string())
-            _logger.info("Email sent to: %s; cc: %s", to, cc)
-            ok = True
+            with contextlib.closing(smtp_class(server_host)) as client:
+                if user is not None:
+                    client.login(user, env.get_config(common.S_OUTPUT, S_EMAIL, O_PASSWD))
+                client.sendmail(send_from, to + cc, message.as_string())
+                _logger.info("Email sent to: %s; cc: %s", to, cc)
+                ok = True
         except Exception:
             _logger.exception("Failed to send email to: %s; cc: %s", to, cc)
-        finally:
-            # XXX: checkpoint() does not work inside finally, causing an exception in the
-            # depths of the interpreter. This problem should be solved someday.
-            try:
-                server.quit()
-            except Exception:
-                pass
     else:
         _logger.info("Email sent to: %s; cc: %s (noop)", to, cc)
         ok = True
