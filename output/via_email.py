@@ -110,7 +110,10 @@ def _send_raw(task, to, subject, body, cc = ()):
         finally:
             # XXX: checkpoint() does not work inside finally, causing an exception in the
             # depths of the interpreter. This problem should be solved someday.
-            server.quit()
+            try:
+                server.quit()
+            except Exception:
+                pass
     else:
         _logger.info("Email sent to: %s; cc: %s (noop)", to, cc)
         ok = True
