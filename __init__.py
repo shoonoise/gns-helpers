@@ -6,3 +6,4 @@ from .storage import *
 from .output import *
 from .golem import *
 from . import juggler
+from . import gitrules
