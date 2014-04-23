@@ -1,7 +1,4 @@
-import urllib.request
-import urllib.parse
-import urllib.error
-import contextlib
+import requests
 import logging
 
 
@@ -10,30 +7,22 @@ _logger = logging.getLogger(__name__)
 
 
 ##### Private methods #####
-def send_raw(to, host, service, status, body, instance=""):
-    request = urllib.request.Request(
-        "http://{to}/juggler-fcgi.py?{query}".format(to=to, query=urllib.parse.urlencode({
+def send_raw(to, host, service, status, description, instance=""):
+    _logger.debug("Sending to Juggler: %s", to)
+    ok = False
+    try:
+        result = requests.get("http://{}/juggler-fcgi.py".format(to), params={
                 "host":        host,
                 "service":     service,
                 "instance":    instance,
                 "status":      status,
-                "description": body,
-            }),
-        ))
-    opener = urllib.request.build_opener()
-    _logger.debug("Sending to Juggler: %s", to)
-    ok = False
-    try:
-        with contextlib.closing(opener.open(request)) as web_file:
-            result = web_file.read().decode().strip()
-        if result == "OK":
+                "description": description,
+            })
+        if result.status_code == 200 and result.text == "OK":
             _logger.info("Event sent to Juggler to %s, response: %s", to, result)
             ok = True
         else:
-            _logger.error("Invalid response from Juggler-frontend (%s): %s", to, result)
-    except urllib.error.HTTPError as err:
-        result = err.read().decode().strip()
-        _logger.exception("Failed to send SMS to %s, response: %s", to, result)
+            _logger.error("Failed to send SMS to %s: %d %s; %s", to, result.status_code, result.reason, result.text)
     except Exception:
         _logger.exception("Failed to send SMS to %s", to)
     return ok
