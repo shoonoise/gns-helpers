@@ -6,4 +6,7 @@ from .storage import *
 from .output import *
 from .golem import *
 from . import juggler
-from . import gitrules
+
+# XXX: This module should be completely rewritten!
+# Version of the rules should provide GNS.
+#from . import gitrules
