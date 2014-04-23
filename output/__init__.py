@@ -6,8 +6,8 @@ import ulib.validators.common # pylint: disable=W0611
 
 from gns import env
 
-from . import via_email
-from . import via_ya_sms
+from . import via_email as email
+from . import via_ya_sms as sms
 
 
 ##### Public constants #####
@@ -22,8 +22,8 @@ CONFIG_MAP = functools.reduce(typetools.merge_dicts, (
                 O_NOOP: (False, validators.common.valid_bool),
             }
         },
-        via_email.CONFIG_MAP,
-        via_ya_sms.CONFIG_MAP,
+        email.CONFIG_MAP,
+        #sms.CONFIG_MAP, # XXX: No config
     ))
 
 
@@ -32,11 +32,7 @@ env.patch_config(CONFIG_MAP)
 
 
 ##### Provides #####
-email = via_email.Email # pylint: disable=C0103
-sms = via_ya_sms.Sms # pylint: disable=C0103
-
 __all__ = (
     "email",
     "sms",
 )
-
