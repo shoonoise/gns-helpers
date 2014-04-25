@@ -1,7 +1,3 @@
-import urllib.request
-import urllib.parse
-import urllib.error
-
 import logging
 
 from ulib import validators
@@ -11,26 +7,10 @@ from raava import worker
 from gns import env
 
 from . import common
+from .. import golem
 
 
 ##### Public constants #####
-S_SMS    = "sms"
-
-O_SEND_URL = "send-url"
-O_CC       = "cc"
-
-
-###
-CONFIG_MAP = {
-    common.S_OUTPUT: {
-        S_SMS: {
-            O_SEND_URL: ("http://example.com", str),
-        },
-    },
-}
-
-
-###
 DEFAULT_BODY_TEMPLATE = """
     <%
         import time
@@ -50,26 +30,12 @@ _logger = logging.getLogger(__name__)
 ##### Private methods #####
 def _send_raw(task, to, body):
     to = validators.common.valid_string_list(to)
-
-    request = urllib.request.Request(
-        env.get_config(common.S_OUTPUT, S_SMS, O_SEND_URL),
-        data=urllib.parse.urlencode({
-                "resps": ",".join(to),
-                "msg":   body,
-            }).encode(),
-        )
-    opener = urllib.request.build_opener()
     _logger.debug("Sending to Golem SMS API: %s", to)
-
     ok = False
     if not env.get_config(common.S_OUTPUT, common.O_NOOP):
         try:
-            result = opener.open(request).read().decode().strip()
-            _logger.info("SMS sent to Golem to %s, response: %s", to, result)
+            golem.send_sms_for_user(to, body)
             ok = True
-        except urllib.error.HTTPError as err:
-            result = err.read().decode().strip()
-            _logger.exception("Failed to send SMS to %s, response: %s", to, result)
         except Exception:
             _logger.exception("Failed to send SMS to %s", to)
     else:
@@ -78,12 +44,10 @@ def _send_raw(task, to, body):
     task.checkpoint()
     return ok
 
-def _send_event(task, to, event, body = DEFAULT_BODY_TEMPLATE):
+def _send_event(task, to, event, body=DEFAULT_BODY_TEMPLATE):
     return _send_raw(task, to, env.format_event(body, event))
 
 
-##### Public classes #####
-class Sms:
-    send_raw = worker.make_task_method(_send_raw)
-    send_event = worker.make_task_method(_send_event)
-
+##### Public methods #####
+send_raw = worker.make_task_method(_send_raw) # pylint: disable=C0103
+send_event = worker.make_task_method(_send_event) # pylint: disable=C0103

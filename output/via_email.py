@@ -76,7 +76,7 @@ _logger = logging.getLogger(__name__)
 
 
 ##### Private methods #####
-def _send_raw(task, to, subject, body, cc = ()):
+def _send_raw(task, to, subject, body, cc=()):
     to = validators.common.validStringList(to)
     cc = validators.common.validStringList(cc) + env.get_config(common.S_OUTPUT, S_EMAIL, O_CC)
 
@@ -114,12 +114,10 @@ def _send_raw(task, to, subject, body, cc = ()):
     task.checkpoint()
     return ok
 
-def _send_event(task, to, event, subject = DEFAULT_SUBJECT_TEMPLATE, body = DEFAULT_BODY_TEMPLATE, cc = ()):
+def _send_event(task, to, event, subject=DEFAULT_SUBJECT_TEMPLATE, body=DEFAULT_BODY_TEMPLATE, cc=()):
     return _send_raw(task, to, env.format_event(subject, event), env.format_event(body, event), cc)
 
 
-##### Public classes #####
-class Email:
-    send_raw = worker.make_task_method(_send_raw)
-    send_event = worker.make_task_method(_send_event)
-
+##### Public methods #####
+send_raw = worker.make_task_method(_send_raw) # pylint: disable=C0103
+send_event = worker.make_task_method(_send_event) # pylint: disable=C0103

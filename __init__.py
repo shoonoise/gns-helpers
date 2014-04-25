@@ -4,7 +4,7 @@ from .filters import *
 from .state import *
 from .storage import *
 from .output import *
-from .golem import *
+from . import golem
 from . import juggler
 
 # XXX: This module should be completely rewritten!
