@@ -27,8 +27,8 @@ DEFAULT_BODY_TEMPLATE = """
 _logger = logging.getLogger(__name__)
 
 
-##### Private methods #####
-def _send_raw(task, to, body):
+##### Public methods #####
+def send_raw(to, body):
     to = validators.common.valid_string_list(to)
     _logger.debug("Sending to Golem SMS API: %s", to)
     ok = False
@@ -41,13 +41,8 @@ def _send_raw(task, to, body):
     else:
         _logger.info("SMS sent to Golem (noop) to %s", to)
         ok = True
-    task.checkpoint()
+    worker.get_current_task().checkpoint()
     return ok
 
-def _send_event(task, to, event, body=DEFAULT_BODY_TEMPLATE):
-    return _send_raw(task, to, env.format_event(body, event))
-
-
-##### Public methods #####
-send_raw = worker.make_task_method(_send_raw) # pylint: disable=C0103
-send_event = worker.make_task_method(_send_event) # pylint: disable=C0103
+def send_event(to, event, body=DEFAULT_BODY_TEMPLATE):
+    return send_raw(to, env.format_event(body, event))
