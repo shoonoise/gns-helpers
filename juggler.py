@@ -8,8 +8,8 @@ from raava import worker
 _logger = logging.getLogger(__name__)
 
 
-##### Private methods #####
-def _send_raw(task, to, host, service, status, description, instance=""):
+##### Public methods #####
+def send_raw(to, host, service, status, description, instance=""):
     _logger.debug("Sending to Juggler: %s", to)
     ok = False
     try:
@@ -27,9 +27,5 @@ def _send_raw(task, to, host, service, status, description, instance=""):
             _logger.error("Failed to send SMS to %s: %d %s; %s", to, result.status_code, result.reason, result.text)
     except Exception:
         _logger.exception("Failed to send SMS to %s", to)
-    task.checkpoint()
+    worker.get_current_task().checkpoint()
     return ok
-
-
-##### Public methods #####
-send_raw = worker.make_task_method(_send_raw) # pylint: disable=C0103
