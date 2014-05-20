@@ -7,9 +7,9 @@ import setuptools
 # =====
 if __name__ == "__main__":
     setuptools.setup(
-        name="gns-rules-base",
+        name="gns-helpers",
         version="0.1",
-        url="https://github.com/yandex-sysmon/gns-rules-base",
+        url="https://github.com/yandex-sysmon/gns-helpers",
         license="LGPLv3",
         author="Devaev Maxim",
         author_email="mdevaev@gmail.com",
@@ -17,8 +17,8 @@ if __name__ == "__main__":
         platforms="any",
 
         packages=[
-            "gnsrulesbase",
-            "gnsrulesbase/output",
+            "gnshelpers",
+            "gnshelpers/output",
         ],
 
         classifiers=[ # http://pypi.python.org/pypi?:action=list_classifiers
