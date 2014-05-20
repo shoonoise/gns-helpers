@@ -19,11 +19,11 @@ class date: # pylint: disable=C0103
 
     @property
     def weekday(self):
-        return self.datetime.weekday()
+        return self.datetime.weekday() # pylint: disable=E1103
 
     @property
     def month(self):
-        return self.datetime.month
+        return self.datetime.month # pylint: disable=E1103
 
 for (name, value) in zip(
         ("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec") +

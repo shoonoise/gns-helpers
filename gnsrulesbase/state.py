@@ -32,7 +32,8 @@ def _add_previous(*fields):
                 fatal_write=False,
             )
             if not write_ok:
-                _logger.debug("Can't save event value (by fields %s) with version %d because the storage contains a newer version (%d)",
+                _logger.debug("Can't save event value (by fields %s) with version %d"
+                    "because the storage contains a newer version (%d)",
                     { key: event_root[key] for key in fields }, version, old_version)
             return method(event_root, **kwargs)
         return wrap
