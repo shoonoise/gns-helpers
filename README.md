@@ -9,7 +9,7 @@
 
 ###Quick start###
 This code is a part of [GNS](https://github.com/yandex-sysmon/gns).
-You can install it from PyPI:
+You can install it from PyPI. Warning! PIP does not work with PyPy3, causing SEGFAULT. Use easy_install:
 ```
 pypy3 -m easy_install --user --upgrade gns-helpers
 ```
