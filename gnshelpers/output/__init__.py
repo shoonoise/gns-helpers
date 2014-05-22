@@ -2,7 +2,7 @@ import functools
 
 from ulib import typetools
 from ulib import validators
-import ulib.validators.common # pylint: disable=W0611
+import ulib.validators.common  # pylint: disable=W0611
 
 from gns import env
 
@@ -23,7 +23,7 @@ CONFIG_MAP = functools.reduce(typetools.merge_dicts, (
             }
         },
         email.CONFIG_MAP,
-        #sms.CONFIG_MAP, # XXX: No config
+        #sms.CONFIG_MAP,  # XXX: No config
     ))
 
 

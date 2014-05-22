@@ -3,7 +3,7 @@ import dateutil.parser
 
 
 ##### Private classes #####
-class date: # pylint: disable=C0103
+class date:  # pylint: disable=C0103
     workdays = tuple(range(0, 5))
     offdays = tuple(range(5, 7))
 
@@ -19,11 +19,11 @@ class date: # pylint: disable=C0103
 
     @property
     def weekday(self):
-        return self.datetime.weekday() # pylint: disable=E1103
+        return self.datetime.weekday()  # pylint: disable=E1103
 
     @property
     def month(self):
-        return self.datetime.month # pylint: disable=E1103
+        return self.datetime.month  # pylint: disable=E1103
 
 for (name, value) in zip(
         ("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec") +
@@ -37,4 +37,3 @@ for (name, value) in zip(
 __all__ = (
     "date",
 )
-
