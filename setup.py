@@ -34,5 +34,6 @@ if __name__ == "__main__":
             "python-dateutil >= 2.2",
             "golemapi >= 0.4",
             "gns >= 0.1",
+            "raava >= 0.10",
         ]
     )
