@@ -1,18 +1,10 @@
-language: c
-env:
-    - PYTHONPATH=/usr/lib/pypy3/site-packages
-before_install:
-    - sudo apt-add-repository 'deb http://nikicat.github.io/pypy3-repo ./'
-    - sudo apt-get update
-    - sudo apt-get install pypy3 -y --force-yes
-    - sudo ln -fs pypy3 /usr/bin/python
-    - sudo mkdir /usr/lib/pypy3/site-packages
-    - curl https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py | sudo PYTHONPATH=/usr/lib/pypy3/site-packages pypy3
-    - sudo ln -fs /usr/lib/pypy3/bin/easy_install /usr/local/bin/easy_install
-install:
-    - sudo PYTHONPATH=/usr/lib/pypy3/site-packages easy_install tox
-script:
-    - /usr/lib/pypy3/bin/tox -v
+language: python
+python:
+  - "3.2"
+  - "3.3"
+  - "3.4"
+install: "pip install tox"
+script: tox
 notifications:
     hipchat:
         rooms:
