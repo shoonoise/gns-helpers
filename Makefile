@@ -1,12 +1,6 @@
 all:
 	true
 
-tox:
-	pypy3 -m tox
-
-pylint:
-	pypy3 -m tox -e pylint
-
 pypi:
 	python setup.py register
 	python setup.py sdist upload
