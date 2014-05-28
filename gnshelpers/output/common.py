@@ -1,5 +1,5 @@
 from ulib import validators
-import ulib.validators.common # pylint: disable=W0611
+import ulib.validators.common  # pylint: disable=W0611
 
 
 ##### Public constants #####
@@ -13,4 +13,3 @@ CONFIG_MAP = {
         O_NOOP: (False, validators.common.valid_bool),
     },
 }
-

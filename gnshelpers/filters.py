@@ -5,7 +5,7 @@ from raava.rules import disable_handler
 
 
 ##### Private classes #####
-class cmp: # pylint: disable=C0103
+class cmp:  # pylint: disable=C0103
     pass
 for (name, comparator) in comparators.COMPARATORS_MAP.items():
     setattr(cmp, name, comparator)
@@ -18,4 +18,3 @@ __all__ = (
     "match_extra",
     "disable_handler",
 )
-

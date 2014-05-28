@@ -19,6 +19,7 @@ def _add_previous(*fields):
             const.EVENT.HOST,
             const.EVENT.SERVICE,
         ))
+
     def make_method(method):
         def wrap(event_root, **kwargs):
             check_id = typetools.object_hash([ event_root.get(field) for field in fields ])
@@ -32,8 +33,9 @@ def _add_previous(*fields):
                 fatal_write=False,
             )
             if not write_ok:
-                _logger.debug("Can't save event value (by fields %s) with version %d because the storage contains a newer version (%d)",
-                    { key: event_root[key] for key in fields }, version, old_version)
+                _logger.debug("Can't save event value (by fields %s) with version %d"
+                              "because the storage contains a newer version (%d)",
+                              { key: event_root[key] for key in fields }, version, old_version)
             return method(event_root, **kwargs)
         return wrap
     return make_method
@@ -52,7 +54,7 @@ def _is_changed(previous, current, from_, to, field=None):
 
 
 ##### Private classes #####
-class state: # pylint: disable=C0103
+class state:  # pylint: disable=C0103
     add_previous = _add_previous
     is_changed = _is_changed
 
@@ -61,4 +63,3 @@ class state: # pylint: disable=C0103
 __all__ = (
     "state",
 )
-

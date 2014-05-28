@@ -8,7 +8,7 @@ class EVENT:
 
 ###
 class STATUS:
-    OK   = "OK" # pylint: disable=C0103
+    OK   = "OK"  # pylint: disable=C0103
     INFO = "INFO"
     WARN = "WARN"
     CRIT = "CRIT"
@@ -19,4 +19,3 @@ __all__ = (
     "EVENT",
     "STATUS",
 )
-
