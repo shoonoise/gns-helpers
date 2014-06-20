@@ -51,7 +51,7 @@ def send_sms_for_user(to, body):
 @functools.lru_cache(env.get_config(S_GOLEM, O_CACHE_SIZE))
 def _cached_is_downtimed(host, service, every):
     golem = golemapi.GolemApi(env.get_config(S_GOLEM, O_URL_RO))
-    return golem.downtimes.get(host, service)
+    return ( golem.downtimes.get(host, service) is not None )
 
 @functools.lru_cache(env.get_config(S_GOLEM, O_CACHE_SIZE))
 def _cached_get_responsibles(host, every):
