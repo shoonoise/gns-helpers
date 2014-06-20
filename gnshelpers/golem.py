@@ -30,14 +30,29 @@ CONFIG_MAP = {
 env.patch_config(CONFIG_MAP)
 
 
-##### Public methods #####
-def is_downtimed(host, service=None):
-    every = env.get_config(S_GOLEM, O_RECACHE_EVERY)
-    return _cached_is_downtimed(host, service, time.time() // every)
+##### Private methods #####
+def _cached(method):
+    @functools.lru_cache(env.get_config(S_GOLEM, O_CACHE_SIZE))
+    def cached_method(*args, _every=None, **kwargs):  # pylint: disable=W0612
+        return method(*args, **kwargs)
+    method.cached_method = cached_method
 
+    def wrap(*args, **kwargs):
+        every = env.get_config(S_GOLEM, O_RECACHE_EVERY)
+        return method.cached_method(*args, _every=(time.time // every), **kwargs)
+    return wrap
+
+
+##### Public methods #####
+@_cached
+def is_downtimed(host, service=None):
+    golem = golemapi.GolemApi(env.get_config(S_GOLEM, O_URL_RO))
+    return ( golem.downtimes.get(host, service) is not None )
+
+@_cached
 def get_responsibles(host):
-    every = env.get_config(S_GOLEM, O_RECACHE_EVERY)
-    return _cached_get_responsibles(host, time.time() // every)
+    golem = golemapi.GolemApi(env.get_config(S_GOLEM, O_URL_RO))
+    return golem.hosts.get_responsibles(host)
 
 def is_responsible(host, user):
     return ( user in get_responsibles(host) )
@@ -45,15 +60,3 @@ def is_responsible(host, user):
 def send_sms_for_user(to, body):
     golem = golemapi.GolemApi(env.get_config(S_GOLEM, O_URL_RW))
     return golem.sms.send_for_user(to, body)
-
-
-##### Private methods #####
-@functools.lru_cache(env.get_config(S_GOLEM, O_CACHE_SIZE))
-def _cached_is_downtimed(host, service, every):
-    golem = golemapi.GolemApi(env.get_config(S_GOLEM, O_URL_RO))
-    return ( golem.downtimes.get(host, service) is not None )
-
-@functools.lru_cache(env.get_config(S_GOLEM, O_CACHE_SIZE))
-def _cached_get_responsibles(host, every):
-    golem = golemapi.GolemApi(env.get_config(S_GOLEM, O_URL_RO))
-    return golem.hosts.get_responsibles(host)
