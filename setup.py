@@ -32,7 +32,7 @@ if __name__ == "__main__":
 
         install_requires=[
             "python-dateutil >= 2.2",
-            "golemapi >= 0.4",
+            "golemapi >= 0.5",
             "gns >= 0.1",
             "raava >= 0.10",
         ]

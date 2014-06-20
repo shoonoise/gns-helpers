@@ -39,14 +39,14 @@ def is_responsible(host, user):
     return ( user in get_responsibles(host) )
 
 def send_sms_for_user(to, body):
-    golem = golemapi.Golem(env.get_config(S_GOLEM, O_URL_RW))
-    return golem.send_sms_for_user(to, body)
+    golem = golemapi.GolemApi(env.get_config(S_GOLEM, O_URL_RW))
+    return golem.sms.send_for_user(to, body)
 
 
 ##### Private methods #####
 def _inner_get_responsibles(host):
-    golem = golemapi.Golem(env.get_config(S_GOLEM, O_URL_RO))
-    return golem.get_responsibles(host)
+    golem = golemapi.GolemApi(env.get_config(S_GOLEM, O_URL_RO))
+    return golem.hosts.get_responsibles(host)
 
 @functools.lru_cache(env.get_config(S_GOLEM, O_CACHE_SIZE))
 def _cached_get_responsibles(host, every):
