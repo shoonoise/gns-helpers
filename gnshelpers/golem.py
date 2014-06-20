@@ -31,6 +31,10 @@ env.patch_config(CONFIG_MAP)
 
 
 ##### Public methods #####
+def is_downtimed(host, service=None):
+    every = env.get_config(S_GOLEM, O_RECACHE_EVERY)
+    return _cached_is_downtimed(host, service, time.time() // every)
+
 def get_responsibles(host):
     every = env.get_config(S_GOLEM, O_RECACHE_EVERY)
     return _cached_get_responsibles(host, time.time() // every)
@@ -44,10 +48,12 @@ def send_sms_for_user(to, body):
 
 
 ##### Private methods #####
-def _inner_get_responsibles(host):
+@functools.lru_cache(env.get_config(S_GOLEM, O_CACHE_SIZE))
+def _cached_is_downtimed(host, service, every):
     golem = golemapi.GolemApi(env.get_config(S_GOLEM, O_URL_RO))
-    return golem.hosts.get_responsibles(host)
+    return golem.downtimes.get(host, service)
 
 @functools.lru_cache(env.get_config(S_GOLEM, O_CACHE_SIZE))
 def _cached_get_responsibles(host, every):
-    return _inner_get_responsibles(host)
+    golem = golemapi.GolemApi(env.get_config(S_GOLEM, O_URL_RO))
+    return golem.hosts.get_responsibles(host)
