@@ -35,11 +35,10 @@ def _cached(method):
     @functools.lru_cache(env.get_config(S_GOLEM, O_CACHE_SIZE))
     def cached_method(*args, _every=None, **kwargs):  # pylint: disable=W0612
         return method(*args, **kwargs)
-    method.cached_method = cached_method
 
     def wrap(*args, **kwargs):
         every = env.get_config(S_GOLEM, O_RECACHE_EVERY)
-        return method.cached_method(*args, _every=(time.time // every), **kwargs)
+        return cached_method(*args, _every=(time.time() // every), **kwargs)
     return wrap
 
 
