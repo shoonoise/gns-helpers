@@ -33,12 +33,12 @@ env.patch_config(CONFIG_MAP)
 ##### Private methods #####
 def _cached(method):
     @functools.lru_cache(env.get_config(S_GOLEM, O_CACHE_SIZE))
-    def cached_method(*args, _every=None, **kwargs):  # pylint: disable=W0612
+    def cached_method(*args, _, **kwargs):
         return method(*args, **kwargs)
 
     def wrap(*args, **kwargs):
         every = env.get_config(S_GOLEM, O_RECACHE_EVERY)
-        return cached_method(*args, _every=(time.time() // every), **kwargs)
+        return cached_method(*args, _=(time.time() // every), **kwargs)
     return wrap
 
 
