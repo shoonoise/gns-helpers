@@ -36,6 +36,7 @@ def _cached(method):
     def cached_method(*args, _, **kwargs):
         return method(*args, **kwargs)
 
+    @functools.wraps(method)
     def wrap(*args, **kwargs):
         every = env.get_config(S_GOLEM, O_RECACHE_EVERY)
         return cached_method(*args, _=(time.time() // every), **kwargs)
