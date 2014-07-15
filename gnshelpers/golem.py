@@ -21,8 +21,8 @@ O_RECACHE_EVERY = "recache-every"
 ###
 CONFIG_MAP = {
     S_GOLEM: {
-        O_URL_RO:        ("http://example.com", str),
-        O_URL_RW:        ("http://example.com", str),
+        O_URL_RO:        ("http://ro.admin.yandex-team.ru", str),
+        O_URL_RW:        ("https://golem.yandex-team.ru", str),
         O_CACHE_SIZE:    (10000, lambda arg: validators.common.valid_number(arg, 0)),
         O_RECACHE_EVERY: (60, lambda arg: validators.common.valid_number(arg, 1)),
     },
