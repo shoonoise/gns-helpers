@@ -2,6 +2,7 @@ import smtplib
 import email.mime.multipart
 import email.mime.text
 import email.utils
+import email.header
 
 import contextlib
 import logging
@@ -44,7 +45,7 @@ CONFIG_MAP = {
 
 ###
 DEFAULT_SUBJECT_TEMPLATE = """
-    GNS message: ${event.get("host", "<Host?>")}:${event.get("service", "<Service?>")}
+    Powny message: ${event.get("host", "<Host?>")}:${event.get("service", "<Service?>")}
 """
 
 DEFAULT_BODY_TEMPLATE = """
@@ -76,11 +77,16 @@ _logger = logging.getLogger(__name__)
 
 
 ##### Public methods #####
-def send_raw(to, subject, body, cc=()):
+def send_raw(to, subject, body, cc=(), extra_mime=None):
     to = validators.common.validStringList(to)
     cc = validators.common.validStringList(cc) + env.get_config(common.S_OUTPUT, S_EMAIL, O_CC)
 
     send_from = env.get_config(common.S_OUTPUT, S_EMAIL, O_FROM)
+
+    current_task = worker.get_current_task()
+    mime_headers = {"Powny-Job-Id": current_task.get_job_id(),
+                    "Powny-Task-Id": current_task.get_task_id()}
+    mime_headers.update(extra_mime)
 
     message = email.mime.multipart.MIMEMultipart()
     message["From"] = send_from
@@ -90,6 +96,9 @@ def send_raw(to, subject, body, cc=()):
     message["Date"] = email.utils.formatdate(localtime=True)
     message["Subject"] = subject
     message.attach(email.mime.text.MIMEText(body))
+    for name in mime_headers:
+        header = email.header.Header(header_name=name, s=mime_headers[name])
+        message[name] = header
 
     server_host = env.get_config(common.S_OUTPUT, S_EMAIL, O_SERVER)
     user = env.get_config(common.S_OUTPUT, S_EMAIL, O_USER)
@@ -115,4 +124,7 @@ def send_raw(to, subject, body, cc=()):
     return ok
 
 def send_event(to, event, subject=DEFAULT_SUBJECT_TEMPLATE, body=DEFAULT_BODY_TEMPLATE, cc=()):
-    return send_raw(to, env.format_event(subject, event), env.format_event(body, event), cc)
+    extra_mime = {'Powny-Juggler-Status': event.get("status"),
+                  'Powny-Juggler-Host': event.get("host"),
+                  'Powny-Juggler-Service': event.get("service")}
+    return send_raw(to, env.format_event(subject, event), env.format_event(body, event), cc, extra_mime)
